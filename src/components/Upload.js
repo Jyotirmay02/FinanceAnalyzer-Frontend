@@ -11,14 +11,24 @@ import {
   Alert,
   CircularProgress,
   LinearProgress,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
+  Chip,
+  FormControlLabel,
+  Switch,
+  Paper
 } from '@mui/material';
-import { CloudUpload } from '@mui/icons-material';
+import { CloudUpload, Delete, Description } from '@mui/icons-material';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 
 function Upload() {
   const navigate = useNavigate();
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]);
+  const [multiFileMode, setMultiFileMode] = useState(false);
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -26,26 +36,29 @@ function Upload() {
   const [success, setSuccess] = useState(null);
 
   const onDrop = (acceptedFiles) => {
-    const uploadedFile = acceptedFiles[0];
-    if (uploadedFile) {
-      // Check file size (1MB limit)
-      if (uploadedFile.size > 1024 * 1024) {
-        setError('File size must be less than 1MB');
-        return;
-      }
-      
-      // Check file type
-      const allowedTypes = ['.csv', '.xlsx', '.xls'];
-      const fileExtension = uploadedFile.name.toLowerCase().substring(uploadedFile.name.lastIndexOf('.'));
+    const allowedTypes = ['.csv', '.xls', '.xlsx'];
+    
+    for (const file of acceptedFiles) {
+      const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
       
       if (!allowedTypes.includes(fileExtension)) {
         setError('Only CSV and Excel files are supported');
         return;
       }
-      
-      setFile(uploadedFile);
-      setError(null);
     }
+
+    if (multiFileMode) {
+      // Add to existing files
+      setFiles(prev => [...prev, ...acceptedFiles]);
+    } else {
+      // Single file mode - replace
+      setFiles(acceptedFiles.slice(0, 1));
+    }
+    setError(null);
+  };
+
+  const removeFile = (index) => {
+    setFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -55,12 +68,11 @@ function Upload() {
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
       'application/vnd.ms-excel': ['.xls'],
     },
-    multiple: false,
+    multiple: multiFileMode,
   });
-
   const handleUpload = async () => {
-    if (!file) {
-      setError('Please select a file first');
+    if (files.length === 0) {
+      setError('Please select at least one file');
       return;
     }
 
@@ -70,12 +82,16 @@ function Upload() {
 
     try {
       const formData = new FormData();
-      formData.append('files', file);  // Changed from 'file' to 'files'
+      
+      // Add all files
+      files.forEach(file => {
+        formData.append('files', file);
+      });
       
       if (fromDate) formData.append('from_date', fromDate);
       if (toDate) formData.append('to_date', toDate);
 
-      const response = await axios.post('http://localhost:8000/api/analyze', formData, {  // Updated endpoint
+      const response = await axios.post('http://localhost:8000/api/analyze', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -84,7 +100,10 @@ function Upload() {
       // Store analysis_id in localStorage for dashboard access
       localStorage.setItem('current_analysis_id', response.data.analysis_id);
       
-      setSuccess('File processed successfully! Redirecting to dashboard...');
+      const fileCount = files.length;
+      const fileNames = files.map(f => f.name).join(', ');
+      
+      setSuccess(`${fileCount} file${fileCount > 1 ? 's' : ''} processed successfully! (${fileNames}) Redirecting to dashboard...`);
       
       // Redirect to dashboard after 2 seconds
       setTimeout(() => {
@@ -92,7 +111,7 @@ function Upload() {
       }, 2000);
 
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to process file');
+      setError(err.response?.data?.detail || 'Failed to process files');
     } finally {
       setUploading(false);
     }
@@ -116,9 +135,26 @@ function Upload() {
         <Grid item xs={12} md={8}>
           <Card>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Select File
-              </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h6">
+                  Select Files
+                </Typography>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={multiFileMode}
+                      onChange={(e) => {
+                        setMultiFileMode(e.target.checked);
+                        if (!e.target.checked) {
+                          // Keep only first file when switching to single mode
+                          setFiles(prev => prev.slice(0, 1));
+                        }
+                      }}
+                    />
+                  }
+                  label="Multi-file Analysis"
+                />
+              </Box>
               
               <Box
                 {...getRootProps()}
@@ -137,33 +173,63 @@ function Upload() {
                 <input {...getInputProps()} />
                 <CloudUpload sx={{ fontSize: 48, color: '#ccc', mb: 2 }} />
                 <Typography variant="h6" gutterBottom>
-                  {isDragActive ? 'Drop the file here' : 'Drag & drop a file here, or click to select'}
+                  {isDragActive 
+                    ? 'Drop the files here' 
+                    : multiFileMode 
+                      ? 'Drag & drop files here, or click to select multiple files'
+                      : 'Drag & drop a file here, or click to select'
+                  }
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                  Supports CSV, Excel files (max 1MB)
+                  Supports CSV, Excel files • {multiFileMode ? 'Multiple files allowed' : 'Single file only'}
                 </Typography>
               </Box>
 
-              {file && (
-                <Box sx={{ mt: 2, p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
-                  <Typography variant="body1">
-                    📄 Selected: {file.name}
+              {files.length > 0 && (
+                <Paper sx={{ mt: 2, p: 2 }}>
+                  <Typography variant="subtitle1" gutterBottom>
+                    Selected Files ({files.length})
                   </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Size: {formatFileSize(file.size)}
-                  </Typography>
-                </Box>
+                  <List dense>
+                    {files.map((file, index) => (
+                      <ListItem key={index}>
+                        <Description sx={{ mr: 1, color: 'primary.main' }} />
+                        <ListItemText
+                          primary={file.name}
+                          secondary={`${formatFileSize(file.size)} • ${file.type || 'Unknown type'}`}
+                        />
+                        <ListItemSecondaryAction>
+                          <IconButton 
+                            edge="end" 
+                            onClick={() => removeFile(index)}
+                            size="small"
+                          >
+                            <Delete />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    ))}
+                  </List>
+                  
+                  {multiFileMode && (
+                    <Box sx={{ mt: 1 }}>
+                      <Chip 
+                        label={`${files.length} file${files.length > 1 ? 's' : ''} selected`}
+                        color="primary"
+                        size="small"
+                      />
+                    </Box>
+                  )}
+                </Paper>
               )}
 
               {uploading && (
                 <Box sx={{ mt: 2 }}>
                   <LinearProgress />
                   <Typography variant="body2" sx={{ mt: 1 }}>
-                    Processing file...
+                    Processing {files.length} file{files.length > 1 ? 's' : ''}...
                   </Typography>
                 </Box>
-              )}
-
               {error && (
                 <Alert severity="error" sx={{ mt: 2 }}>
                   {error}
@@ -175,6 +241,20 @@ function Upload() {
                   {success}
                 </Alert>
               )}
+
+              <Button
+                variant="contained"
+                onClick={handleUpload}
+                disabled={files.length === 0 || uploading}
+                startIcon={uploading ? <CircularProgress size={20} /> : <CloudUpload />}
+                sx={{ mt: 2 }}
+                fullWidth
+              >
+                {uploading 
+                  ? `Processing ${files.length} file${files.length > 1 ? 's' : ''}...`
+                  : `Analyze ${files.length} file${files.length > 1 ? 's' : ''}`
+                }
+              </Button>
             </CardContent>
           </Card>
         </Grid>
@@ -206,25 +286,16 @@ function Upload() {
                 helperText="Optional: End date for filtering"
               />
 
-              <Button
-                fullWidth
-                variant="contained"
-                onClick={handleUpload}
-                disabled={!file || uploading}
-                startIcon={uploading ? <CircularProgress size={20} /> : <CloudUpload />}
-              >
-                {uploading ? 'Processing...' : 'Process File'}
-              </Button>
-
               <Box sx={{ mt: 3 }}>
                 <Typography variant="body2" color="textSecondary">
                   💡 Tips:
                 </Typography>
                 <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                  • {multiFileMode ? 'Upload multiple bank statements for combined analysis' : 'Upload single bank statement for analysis'}
                   • Use MM-YYYY format for dates (e.g., 01-2024)
                   • Leave dates empty to process all data
                   • Supported formats: CSV, XLSX, XLS
-                  • Maximum file size: 1MB
+                  • {multiFileMode ? 'Multiple files will be merged automatically' : 'Switch to multi-file mode for portfolio analysis'}
                 </Typography>
               </Box>
             </CardContent>
