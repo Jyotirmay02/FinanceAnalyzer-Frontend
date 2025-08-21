@@ -1,177 +1,272 @@
-# FinanceAnalyzer-Frontend
+# FinanceAnalyzer Frontend
 
-React frontend for FinanceAnalyzer - A modern web interface for financial transaction analysis.
+A modern React-based web interface for financial transaction analysis with support for single and multi-file processing.
 
-## Features
-
-- **File Upload**: Drag-and-drop interface for CSV and Excel files
-- **Dashboard**: Overview of financial summaries with charts
-- **Transaction View**: Browse and search through transactions (first 20 shown)
-- **Category Analysis**: Visual breakdown of spending by category
-- **UPI Analysis**: Specialized analysis for UPI transactions
-- **Responsive Design**: Works on desktop and mobile devices
-
-## Tech Stack
-
-- **React 18** - Frontend framework
-- **Material-UI (MUI)** - UI component library
-- **Recharts** - Data visualization
-- **Axios** - HTTP client for API calls
-- **React Router** - Navigation
-
-## Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 16+ and npm (or yarn)
-- Backend server running at http://localhost:8000
+- Node.js 16+ and npm
+- Backend server running on http://localhost:8000
 
-### 1. Install Dependencies
+### Installation & Setup
+
 ```bash
-cd ~/Documents/Finance/FinanceAnalyzer-Frontend
+# Clone the repository
+git clone https://github.com/Jyotirmay02/FinanceAnalyzer-Frontend.git
+cd FinanceAnalyzer-Frontend
 
-# Install all dependencies in node_modules (isolated)
+# Install dependencies
 npm install
 
-# OR using yarn
-yarn install
-```
-
-### 2. Start Development Server
-```bash
-# Start React development server
+# Start development server
 npm start
-
-# OR using yarn
-yarn start
 ```
 
-The app will open at http://localhost:3000
+The application will be available at **http://localhost:3000**
 
-### 3. Backend Requirement
-**Important:** Make sure the backend server is running first:
+## 🖥️ Running the Servers
+
+### Complete Setup (Backend + Frontend)
+
+**Terminal 1 - Backend Server:**
 ```bash
-# In another terminal
-cd ~/Documents/Finance/FinanceAnalyzer-Backend
-poetry run python start_server.py
+cd FinanceAnalyzer-Backend
+python start_server.py
+# Backend runs on http://localhost:8000
 ```
 
-## Development Environment
+**Terminal 2 - Frontend Server:**
+```bash
+cd FinanceAnalyzer-Frontend
+npm start
+# Frontend runs on http://localhost:3000
+```
 
-### Node.js Virtual Environment
-The project uses `node_modules/` for dependency isolation:
-- All dependencies are installed locally in `node_modules/`
-- No global packages required
-- Clean separation from system Node.js packages
+### Verification
+- Backend API: http://localhost:8000/docs
+- Frontend App: http://localhost:3000
+- Health Check: http://localhost:8000/ should return `{"message": "FinanceAnalyzer API is running"}`
+
+## 📊 Features
+
+### File Upload & Analysis
+- **Single File Mode**: Upload one bank statement for analysis
+- **Multi-File Mode**: Upload multiple statements for combined portfolio analysis
+- **Drag & Drop**: Intuitive file selection interface
+- **Format Support**: CSV, XLS, XLSX files
+- **Date Filtering**: Optional date range filtering (MM-YYYY format)
+
+### Analysis Views
+- **Dashboard**: Overview with key metrics and spending charts
+- **Categories**: Detailed category-wise breakdown
+- **UPI Analysis**: Comprehensive UPI transaction insights
+- **Transactions**: Searchable transaction list
+
+### User Experience
+- **Responsive Design**: Works on desktop and mobile
+- **Real-time Updates**: Automatic data refresh after upload
+- **Error Handling**: Clear error messages and validation
+- **Loading States**: Progress indicators during processing
+
+## 🎯 Usage Guide
+
+### 1. Upload Files
+1. Navigate to http://localhost:3000/upload
+2. Toggle **Multi-file Analysis** if analyzing multiple statements
+3. Drag & drop files or click to select
+4. Optionally set date filters (MM-YYYY format)
+5. Click **Analyze** button
+
+### 2. View Results
+- **Dashboard**: Financial overview with charts and key metrics
+- **Categories**: Spending breakdown by category
+- **UPI Analysis**: UPI-specific transaction analysis
+- **Transactions**: Detailed transaction list
+
+### 3. Multi-File Analysis
+- Enable multi-file mode with the toggle switch
+- Upload multiple bank statements (different months/years)
+- System combines data for comprehensive portfolio analysis
+- All analysis views show combined results
+
+## 🏗️ Architecture
+
+### Component Structure
+```
+src/
+├── components/
+│   ├── Dashboard.js      # Main dashboard with charts
+│   ├── Categories.js     # Category analysis view
+│   ├── UPIAnalysis.js    # UPI transaction insights
+│   ├── Transactions.js   # Transaction list view
+│   ├── Upload.js         # File upload interface
+│   └── Navbar.js         # Navigation component
+├── App.js               # Main app component
+└── index.js             # App entry point
+```
+
+### Data Flow
+1. **Upload**: Files sent to `/api/analyze` endpoint
+2. **Storage**: `analysis_id` stored in localStorage
+3. **Retrieval**: Components fetch data using `analysis_id`
+4. **Display**: Data rendered in respective components
+
+## 🔌 API Integration
+
+### Endpoints Used
+```javascript
+// File upload
+POST /api/analyze
+FormData: files, from_date?, to_date?
+
+// Dashboard data
+GET /api/summary/overall/{analysis_id}
+
+// Category breakdown
+GET /api/summary/categories/{analysis_id}
+
+// UPI analysis
+GET /api/analysis/upi/{analysis_id}
+
+// Transaction list
+GET /api/transactions/{analysis_id}
+```
+
+### Error Handling
+- Network errors: Retry mechanism with user feedback
+- Validation errors: Clear field-level error messages
+- Server errors: Graceful degradation with error alerts
+
+## 🧪 Testing
+
+### Manual Testing
+```bash
+# Start both servers
+npm start  # Frontend on :3000
+# Backend should be on :8000
+
+# Test file upload
+1. Go to http://localhost:3000/upload
+2. Upload sample file (SBI_2024.xls)
+3. Verify redirect to dashboard
+4. Check all navigation links work
+```
+
+### Sample Data
+Use files from `../FinanceAnalyzer/data/`:
+- `SBI_2024.xls` - Single year analysis
+- `1754580321215.CSV` - UPI-heavy transactions
+- Multiple files for portfolio analysis
+
+## 🎨 UI Components
+
+### Material-UI Integration
+- **Cards**: Clean data presentation
+- **Charts**: Recharts for visualizations
+- **Forms**: File upload with validation
+- **Navigation**: Responsive app bar
+- **Feedback**: Alerts, loading states, progress bars
+
+### Responsive Design
+- Mobile-first approach
+- Breakpoints: xs, sm, md, lg, xl
+- Touch-friendly interface
+- Optimized for various screen sizes
+
+## 🔧 Development
+
+### Available Scripts
+```bash
+npm start          # Development server
+npm run build      # Production build
+npm test           # Run tests
+npm run eject      # Eject from Create React App
+```
 
 ### Environment Variables
-Create `.env.local` for local development:
 ```bash
-# Optional: Override backend URL
+# .env file (optional)
 REACT_APP_API_URL=http://localhost:8000
 ```
 
-### Available Scripts
+### Code Style
+- ES6+ JavaScript
+- Functional components with hooks
+- Material-UI design system
+- Consistent naming conventions
+
+## 📱 Browser Support
+
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
+
+## 🚨 Troubleshooting
+
+### Common Issues
+
+**Frontend won't start:**
 ```bash
-# Development
-npm start          # Start dev server with hot reload
-npm test           # Run tests
-npm run build      # Build for production
-
-# Dependency management
-npm install        # Install all dependencies
-npm install <pkg>  # Add new dependency
-npm update         # Update dependencies
-```
-
-## Testing the Full Stack
-
-### 1. Start Backend (Terminal 1)
-```bash
-cd ~/Documents/Finance/FinanceAnalyzer-Backend
-poetry run python start_server.py
-```
-
-### 2. Start Frontend (Terminal 2)
-```bash
-cd ~/Documents/Finance/FinanceAnalyzer-Frontend
+# Clear node modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
 npm start
 ```
 
-### 3. Test Upload
-1. Open http://localhost:3000
-2. Upload a file from `~/Documents/Finance/FinanceAnalyzer/data/`
-3. Check dashboard, transactions, categories, UPI analysis
+**API connection errors:**
+- Verify backend is running on port 8000
+- Check CORS settings in backend
+- Ensure no firewall blocking localhost connections
 
-### 4. Verify API
-- Backend API docs: http://localhost:8000/docs
-- Health check: http://localhost:8000/
+**File upload fails:**
+- Check file format (CSV, XLS, XLSX only)
+- Verify file size limits
+- Ensure backend has write permissions
 
-## Project Structure
+**Dashboard shows no data:**
+- Check browser localStorage for `current_analysis_id`
+- Verify API endpoints return data
+- Check browser console for errors
 
-```
-FinanceAnalyzer-Frontend/
-├── public/
-│   └── index.html
-├── src/
-│   ├── components/
-│   │   ├── Dashboard.js      # Main dashboard with summaries
-│   │   ├── Upload.js         # File upload interface
-│   │   ├── Transactions.js   # Transaction list view
-│   │   ├── Categories.js     # Category analysis
-│   │   ├── UPIAnalysis.js    # UPI-specific analysis
-│   │   └── Navbar.js         # Navigation bar
-│   ├── App.js               # Main app component
-│   └── index.js             # App entry point
-├── package.json
-└── README.md
-```
-
-## API Integration
-
-The frontend communicates with the backend via REST APIs:
-
-- `POST /api/analyze` - Upload and analyze files
-- `GET /api/transactions/{analysis_id}` - Get transaction data
-- `GET /api/summary/categories/{analysis_id}` - Get category summary
-- `GET /api/summary/overall/{analysis_id}` - Get overall summary
-- `GET /api/analysis/upi/{analysis_id}` - Get UPI analysis
-
-## Current Limitations (WIP)
-
-- **Transaction Pagination**: Currently shows first 20 transactions only
-- **Search/Filter**: Basic search functionality, advanced filters coming soon
-- **Multi-file Upload**: UI supports single file, backend supports multiple
-- **Export**: Download functionality to be added
-
-## Development
-
-### Adding New Features
-1. Create new component in `src/components/`
-2. Add route in `App.js` if needed
-3. Update navigation in `Navbar.js`
-4. Test with backend API
-
-### Building for Production
+### Debug Mode
 ```bash
-npm run build
+# Enable verbose logging
+REACT_APP_DEBUG=true npm start
 ```
 
-### Available Scripts
-- `npm start` - Start development server
-- `npm run build` - Build for production
-- `npm test` - Run tests
-- `npm run eject` - Eject from Create React App
+## 📝 License
 
-## Configuration
+MIT License - see LICENSE file for details.
 
-### Backend URL
-The frontend is configured to connect to `http://localhost:8000` for the backend API. 
-To change this, update the axios calls in component files.
+## 🤝 Contributing
 
-### CORS
-The backend is configured to allow requests from `http://localhost:3000` during development.
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
 
-## Author
+## 📞 Support
 
-**Jyotirmay Sethi**  
-Email: jyotirmays123@gmail.com
+For issues and questions:
+- Create an issue on GitHub
+- Check the backend API documentation at http://localhost:8000/docs
+- Review sample data in `../FinanceAnalyzer/data/` directory
+
+---
+
+**Quick Commands Summary:**
+```bash
+# Setup
+git clone https://github.com/Jyotirmay02/FinanceAnalyzer-Frontend.git
+cd FinanceAnalyzer-Frontend && npm install
+
+# Run
+npm start  # Frontend on :3000
+# Backend on :8000 (separate terminal)
+
+# Test
+# Upload file at http://localhost:3000/upload
+# View results at http://localhost:3000/
+```
