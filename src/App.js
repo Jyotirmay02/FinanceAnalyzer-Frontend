@@ -8,6 +8,7 @@ import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
 import Transactions from './components/Transactions';
 import Categories from './components/Categories';
+import PortfolioAnalysis from './components/PortfolioAnalysis';
 import UPIAnalysis from './components/UPIAnalysis';
 import Upload from './components/Upload';
 
@@ -45,6 +46,7 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/transactions" element={<Transactions />} />
               <Route path="/categories" element={<Categories />} />
+              <Route path="/portfolio" element={<PortfolioAnalysis />} />
               <Route path="/upi" element={<UPIAnalysis />} />
               <Route path="/upload" element={<Upload />} />
             </Routes>

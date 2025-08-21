@@ -29,6 +29,7 @@ function Upload() {
   const navigate = useNavigate();
   const [files, setFiles] = useState([]);
   const [multiFileMode, setMultiFileMode] = useState(false);
+  const [portfolioMode, setPortfolioMode] = useState(false);
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -90,6 +91,7 @@ function Upload() {
       
       if (fromDate) formData.append('from_date', fromDate);
       if (toDate) formData.append('to_date', toDate);
+      if (portfolioMode) formData.append('portfolio_mode', 'true');
 
       const response = await axios.post('http://localhost:8000/api/analyze', formData, {
         headers: {
@@ -154,6 +156,19 @@ function Upload() {
                   }
                   label="Multi-file Analysis"
                 />
+                
+                {multiFileMode && (
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={portfolioMode}
+                        onChange={(e) => setPortfolioMode(e.target.checked)}
+                        color="secondary"
+                      />
+                    }
+                    label="Portfolio Mode (Ignore Self-Transfers)"
+                  />
+                )}
               </Box>
               
               <Box

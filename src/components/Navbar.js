@@ -17,6 +17,7 @@ import {
   Receipt as TransactionsIcon,
   PieChart as CategoriesIcon,
   AccountBalance as UPIIcon,
+  TrendingUp as PortfolioIcon,
   CloudUpload as UploadIcon,
 } from '@mui/icons-material';
 
@@ -26,6 +27,7 @@ const menuItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
   { text: 'Transactions', icon: <TransactionsIcon />, path: '/transactions' },
   { text: 'Categories', icon: <CategoriesIcon />, path: '/categories' },
+  { text: 'Portfolio', icon: <PortfolioIcon />, path: '/portfolio' },
   { text: 'UPI Analysis', icon: <UPIIcon />, path: '/upi' },
   { text: 'Upload', icon: <UploadIcon />, path: '/upload' },
 ];
