@@ -230,6 +230,8 @@ function Upload() {
                     Processing {files.length} file{files.length > 1 ? 's' : ''}...
                   </Typography>
                 </Box>
+              )}
+
               {error && (
                 <Alert severity="error" sx={{ mt: 2 }}>
                   {error}
