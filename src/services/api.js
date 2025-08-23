@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const API_BASE_URL = 'http://localhost:8001/api/v2'
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
@@ -33,11 +33,6 @@ export const getCategories = async (analysisId) => {
   return response.data
 }
 
-export const getTransactions = async (analysisId, params = {}) => {
-  const response = await api.get(`/transactions/${analysisId}`, { params })
-  return response.data
-}
-
 export const getUPIAnalysis = async (analysisId) => {
   const response = await api.get(`/upi-analysis/${analysisId}`)
   return response.data
@@ -61,6 +56,22 @@ export const getBudgetProgress = async (analysisId) => {
 
 export const getUpcomingBills = async (analysisId) => {
   const response = await api.get(`/upcoming-bills/${analysisId}`)
+  return response.data
+}
+
+export const getTransactions = async (analysisId, options = {}) => {
+  const { page = 1, pageSize = 50, category, transactionType, search } = options
+  
+  const params = new URLSearchParams({
+    page: page.toString(),
+    page_size: pageSize.toString()
+  })
+  
+  if (category) params.append('category', category)
+  if (transactionType) params.append('transaction_type', transactionType)
+  if (search) params.append('search', search)
+  
+  const response = await api.get(`/transactions/${analysisId}?${params}`)
   return response.data
 }
 

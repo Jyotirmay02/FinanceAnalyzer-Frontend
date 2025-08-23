@@ -8,11 +8,25 @@ export const formatCurrency = (amount) => {
 }
 
 export const formatDate = (date) => {
-  return new Intl.DateTimeFormat('en-IN', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  }).format(new Date(date))
+  if (!date || date === 'NaT' || date === 'null' || date === 'undefined') {
+    return 'Invalid Date'
+  }
+  
+  try {
+    const dateObj = new Date(date)
+    if (isNaN(dateObj.getTime())) {
+      return 'Invalid Date'
+    }
+    
+    return new Intl.DateTimeFormat('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    }).format(dateObj)
+  } catch (error) {
+    console.error('Date formatting error:', error, 'for date:', date)
+    return 'Invalid Date'
+  }
 }
 
 export const formatPercent = (value) => {
