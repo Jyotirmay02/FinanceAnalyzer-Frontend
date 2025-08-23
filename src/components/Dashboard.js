@@ -45,6 +45,8 @@ function Dashboard() {
       
       // Get analysis_id from localStorage
       const analysisId = localStorage.getItem('current_analysis_id');
+      console.log('Dashboard: analysisId from localStorage:', analysisId);
+      
       if (!analysisId) {
         setError('No analysis found. Please upload a file first.');
         setLoading(false);
@@ -99,6 +101,14 @@ function Dashboard() {
 
   const { overall_summary, filter_info, top_categories } = dashboardData;
 
+  // Add safety checks for overall_summary
+  const safeOverallSummary = overall_summary || {
+    'Total Spends (Debits)': 0,
+    'Total Credits': 0,
+    'Net Change': 0,
+    'Total Transactions': 0
+  };
+
   // Prepare chart data - add safety check
   const pieChartData = (top_categories || []).map((cat, index) => ({
     name: cat.Category,
@@ -132,7 +142,7 @@ function Dashboard() {
                     Total Spends
                   </Typography>
                   <Typography variant="h5">
-                    {formatCurrency(overall_summary['Total Spends (Debits)'])}
+                    {formatCurrency(safeOverallSummary['Total Spends (Debits)'])}
                   </Typography>
                 </Box>
               </Box>
@@ -150,7 +160,7 @@ function Dashboard() {
                     Total Credits
                   </Typography>
                   <Typography variant="h5">
-                    {formatCurrency(overall_summary['Total Credits'])}
+                    {formatCurrency(safeOverallSummary['Total Credits'])}
                   </Typography>
                 </Box>
               </Box>
@@ -169,9 +179,9 @@ function Dashboard() {
                   </Typography>
                   <Typography 
                     variant="h5" 
-                    color={overall_summary['Net Change'] >= 0 ? 'success.main' : 'error.main'}
+                    color={safeOverallSummary['Net Change'] >= 0 ? 'success.main' : 'error.main'}
                   >
-                    {formatCurrency(overall_summary['Net Change'])}
+                    {formatCurrency(safeOverallSummary['Net Change'])}
                   </Typography>
                 </Box>
               </Box>
