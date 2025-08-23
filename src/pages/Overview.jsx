@@ -4,16 +4,6 @@ import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis
 import { formatCurrency } from '../utils/formatters'
 import { getDashboard, getAccountBalances, getMonthlyTrend, getBudgetProgress, getUpcomingBills } from '../services/api'
 
-// Helper function to display currency or "--" for zero values
-const displayCurrency = (value) => {
-  return value === 0 ? '--' : formatCurrency(value)
-}
-
-// Helper function to display percentage or "--" for zero values  
-const displayPercentage = (value) => {
-  return value === 0 ? '--' : `${value}%`
-}
-
 const Overview = () => {
   const [overviewData, setOverviewData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -55,6 +45,13 @@ const Overview = () => {
         
         console.log('API responses:', { dashboardData, accountsData, trendData, budgetData, billsData })
         
+        // Get current month data from trend (last month in array = current month)
+        const currentMonthData = trendData.monthly_data && trendData.monthly_data.length > 0 
+          ? trendData.monthly_data[trendData.monthly_data.length - 1] 
+          : { income: 0, expenses: 0, savings: 0 }
+        
+        console.log('Current month data:', currentMonthData)
+        
         // Transform API responses to match EXACT original UI structure
         const transformedData = {
           netWorth: {
@@ -65,10 +62,10 @@ const Overview = () => {
             changePercent: ((dashboardData.overall_summary.net_change / dashboardData.overall_summary.total_spent) * 100).toFixed(1)
           },
           cashFlow: {
-            income: dashboardData.overall_summary.total_earned,
-            expenses: dashboardData.overall_summary.total_spent,
-            savings: dashboardData.overall_summary.net_change,
-            savingsRate: ((dashboardData.overall_summary.net_change / dashboardData.overall_summary.total_earned) * 100).toFixed(1)
+            income: currentMonthData.income,
+            expenses: currentMonthData.expenses,
+            savings: currentMonthData.savings,
+            savingsRate: currentMonthData.income > 0 ? ((currentMonthData.savings / currentMonthData.income) * 100).toFixed(1) : '0.0'
           },
           accounts: {
             checking: accountsData.accounts.find(acc => acc.account_type === 'checking')?.balance || 0,
@@ -189,16 +186,16 @@ const Overview = () => {
           </div>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-3xl font-bold text-gray-900">{displayCurrency(netWorth.total)}</span>
+              <span className="text-3xl font-bold text-gray-900">{formatCurrency(netWorth.total)}</span>
             </div>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <p className="text-gray-600">Assets</p>
-                <p className="font-semibold text-mint-600">{displayCurrency(netWorth.assets)}</p>
+                <p className="font-semibold text-mint-600">{formatCurrency(netWorth.assets)}</p>
               </div>
               <div>
                 <p className="text-gray-600">Liabilities</p>
-                <p className="font-semibold text-expense-600">{displayCurrency(netWorth.liabilities)}</p>
+                <p className="font-semibold text-expense-600">{formatCurrency(netWorth.liabilities)}</p>
               </div>
             </div>
           </div>
@@ -210,19 +207,19 @@ const Overview = () => {
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Income</span>
-              <span className="font-semibold text-mint-600">{displayCurrency(cashFlow.income)}</span>
+              <span className="font-semibold text-mint-600">{formatCurrency(cashFlow.income)}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Expenses</span>
-              <span className="font-semibold text-expense-600">{displayCurrency(cashFlow.expenses)}</span>
+              <span className="font-semibold text-expense-600">{formatCurrency(cashFlow.expenses)}</span>
             </div>
             <hr className="border-gray-200" />
             <div className="flex justify-between items-center">
               <span className="text-gray-900 font-medium">Net Savings</span>
-              <span className="font-bold text-mint-600">{displayCurrency(cashFlow.savings)}</span>
+              <span className="font-bold text-mint-600">{formatCurrency(cashFlow.savings)}</span>
             </div>
             <div className="text-sm text-gray-600">
-              Savings Rate: <span className="font-medium text-mint-600">{displayPercentage(cashFlow.savingsRate)}</span>
+              Savings Rate: <span className="font-medium text-mint-600">{cashFlow.savingsRate}%</span>
             </div>
           </div>
         </div>
@@ -234,23 +231,23 @@ const Overview = () => {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           <div className="text-center">
             <p className="text-sm text-gray-600">Checking</p>
-            <p className="text-lg font-semibold text-gray-900">{displayCurrency(accounts.checking)}</p>
+            <p className="text-lg font-semibold text-gray-900">{formatCurrency(accounts.checking)}</p>
           </div>
           <div className="text-center">
             <p className="text-sm text-gray-600">Savings</p>
-            <p className="text-lg font-semibold text-mint-600">{displayCurrency(accounts.savings)}</p>
+            <p className="text-lg font-semibold text-mint-600">{formatCurrency(accounts.savings)}</p>
           </div>
           <div className="text-center">
             <p className="text-sm text-gray-600">Credit Cards</p>
-            <p className="text-lg font-semibold text-expense-600">{displayCurrency(accounts.creditCards)}</p>
+            <p className="text-lg font-semibold text-expense-600">{formatCurrency(accounts.creditCards)}</p>
           </div>
           <div className="text-center">
             <p className="text-sm text-gray-600">Investments</p>
-            <p className="text-lg font-semibold text-blue-600">{displayCurrency(accounts.investments)}</p>
+            <p className="text-lg font-semibold text-blue-600">{formatCurrency(accounts.investments)}</p>
           </div>
           <div className="text-center">
             <p className="text-sm text-gray-600">Loans</p>
-            <p className="text-lg font-semibold text-expense-600">{displayCurrency(accounts.loans)}</p>
+            <p className="text-lg font-semibold text-expense-600">{formatCurrency(accounts.loans)}</p>
           </div>
         </div>
       </div>
