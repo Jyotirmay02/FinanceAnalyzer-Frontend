@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 import { TrendingDown, TrendingUp, DollarSign } from 'lucide-react'
 import { formatCurrency } from '../utils/formatters'
@@ -8,6 +9,7 @@ const Categories = () => {
   const [categoryData, setCategoryData] = useState([])
   const [loading, setLoading] = useState(true)
   const [viewType, setViewType] = useState('spending') // 'spending' or 'income'
+  const navigate = useNavigate()
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -16,8 +18,14 @@ const Categories = () => {
         setLoading(true)
         setError(null)
         
-        // Get analysis_id from localStorage or use fallback
-        const analysisId = localStorage.getItem('current_analysis_id') || '131f8613-e540-43f7-b760-7f4ff6dc4c86'
+        // Get analysis_id from localStorage - no fallback
+        const analysisId = localStorage.getItem('current_analysis_id')
+        
+        // If no analysis_id, redirect to upload
+        if (!analysisId) {
+          navigate('/upload')
+          return
+        }
         
         const response = await getCategories(analysisId)
         

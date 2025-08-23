@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { Upload as UploadIcon, FileText, CheckCircle, AlertCircle } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { uploadFiles } from '../services/api'
 
 const Upload = () => {
   const [files, setFiles] = useState([])
   const [uploading, setUploading] = useState(false)
   const [uploadResult, setUploadResult] = useState(null)
+  const navigate = useNavigate()
 
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files)
@@ -24,6 +26,11 @@ const Upload = () => {
       // Store analysis_id for other pages to use
       if (result.analysis_id) {
         localStorage.setItem('current_analysis_id', result.analysis_id)
+        
+        // Auto-redirect to overview after 1 second
+        setTimeout(() => {
+          navigate('/overview')
+        }, 1000)
       }
     } catch (error) {
       setUploadResult({ 
