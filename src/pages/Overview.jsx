@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { TrendingUp, TrendingDown, DollarSign, CreditCard, PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar } from 'lucide-react'
+import { TrendingUp, TrendingDown, DollarSign, CreditCard } from 'lucide-react'
+import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar } from 'recharts'
 import { formatCurrency } from '../utils/formatters'
 
 const Overview = () => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Plus, TrendingUp, TrendingDown, DollarSign, PieChart, BarChart3, Eye, EyeOff } from 'lucide-react'
+import { Plus, TrendingUp, TrendingDown, DollarSign, BarChart3, Eye, EyeOff } from 'lucide-react'
 import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar } from 'recharts'
 import { formatCurrency } from '../utils/formatters'
 
@@ -325,7 +325,7 @@ const Investments = () => {
               </p>
             </div>
             <div className="p-2 bg-purple-100 rounded-lg">
-              <PieChart className="h-6 w-6 text-purple-600" />
+              <BarChart3 className="h-6 w-6 text-purple-600" />
             </div>
           </div>
         </div>

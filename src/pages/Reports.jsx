@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Download, Calendar, Filter, FileText, TrendingUp, PieChart, BarChart3, Eye } from 'lucide-react'
+import { Download, Calendar, Filter, FileText, TrendingUp, BarChart3, Eye, PieChart } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart as RechartsPieChart, Pie, Cell } from 'recharts'
 import { formatCurrency } from '../utils/formatters'
 

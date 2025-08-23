@@ -15,23 +15,25 @@ import Upload from './pages/Upload'
 
 function App() {
   return (
-    <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Overview />} />
-          <Route path="/accounts" element={<Accounts />} />
-          <Route path="/transactions" element={<Transactions />} />
-          <Route path="/budgets" element={<Budgets />} />
-          <Route path="/bills" element={<Bills />} />
-          <Route path="/investments" element={<Investments />} />
-          <Route path="/properties" element={<Properties />} />
-          <Route path="/goals" element={<Goals />} />
-          <Route path="/upi" element={<UPIAnalysis />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/upload" element={<Upload />} />
-        </Routes>
-      </Layout>
-    </Router>
+    <div className="min-h-screen bg-gray-100">
+      <Router>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Overview />} />
+            <Route path="/accounts" element={<Accounts />} />
+            <Route path="/transactions" element={<Transactions />} />
+            <Route path="/budgets" element={<Budgets />} />
+            <Route path="/bills" element={<Bills />} />
+            <Route path="/investments" element={<Investments />} />
+            <Route path="/properties" element={<Properties />} />
+            <Route path="/goals" element={<Goals />} />
+            <Route path="/upi" element={<UPIAnalysis />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/upload" element={<Upload />} />
+          </Routes>
+        </Layout>
+      </Router>
+    </div>
   )
 }
 
