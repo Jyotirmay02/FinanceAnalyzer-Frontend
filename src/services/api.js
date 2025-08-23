@@ -43,6 +43,27 @@ export const getUPIAnalysis = async (analysisId) => {
   return response.data
 }
 
+// NEW APIs for missing sections
+export const getAccountBalances = async (analysisId) => {
+  const response = await api.get(`/accounts/${analysisId}`)
+  return response.data
+}
+
+export const getMonthlyTrend = async (analysisId) => {
+  const response = await api.get(`/monthly-trend/${analysisId}`)
+  return response.data
+}
+
+export const getBudgetProgress = async (analysisId) => {
+  const response = await api.get(`/budget-progress/${analysisId}`)
+  return response.data
+}
+
+export const getUpcomingBills = async (analysisId) => {
+  const response = await api.get(`/upcoming-bills/${analysisId}`)
+  return response.data
+}
+
 // Legacy compatibility
 export const getPortfolioAnalysis = getDashboard
 export const getCategoryAnalysis = getCategories

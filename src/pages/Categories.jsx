@@ -17,7 +17,7 @@ const Categories = () => {
         setError(null)
         
         // Get analysis_id from localStorage or use fallback
-        const analysisId = localStorage.getItem('current_analysis_id') || '7bb15fb8-09df-4024-9081-015086013d0f'
+        const analysisId = localStorage.getItem('current_analysis_id') || '131f8613-e540-43f7-b760-7f4ff6dc4c86'
         
         const response = await getCategories(analysisId)
         
