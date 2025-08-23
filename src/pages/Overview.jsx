@@ -60,10 +60,8 @@ const Overview = () => {
       ]
     }
 
-    setTimeout(() => {
-      setOverviewData(mockOverviewData)
-      setLoading(false)
-    }, 1000)
+    setOverviewData(mockOverviewData)
+    setLoading(false)
   }, [])
 
   if (loading) {

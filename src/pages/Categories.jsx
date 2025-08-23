@@ -124,10 +124,8 @@ const Categories = () => {
       }
     ]
 
-    setTimeout(() => {
-      setCategoryData(viewType === 'spending' ? mockSpendingCategories : mockIncomeCategories)
-      setLoading(false)
-    }, 500)
+    setCategoryData(viewType === 'spending' ? mockSpendingCategories : mockIncomeCategories)
+    setLoading(false)
   }, [viewType])
 
   const COLORS = ['#ef4444', '#f59e0b', '#3b82f6', '#8b5cf6', '#ec4899', '#10b981', '#6b7280']

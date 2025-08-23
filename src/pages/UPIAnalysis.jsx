@@ -63,10 +63,8 @@ const UPIAnalysis = () => {
       }
     }
 
-    setTimeout(() => {
-      setUpiData(mockUpiData)
-      setLoading(false)
-    }, 500)
+    setUpiData(mockUpiData)
+    setLoading(false)
   }, [])
 
   const toggleCategory = (category) => {

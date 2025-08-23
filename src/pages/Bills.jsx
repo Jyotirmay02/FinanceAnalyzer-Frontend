@@ -163,10 +163,8 @@ const Bills = () => {
       }
     ]
 
-    setTimeout(() => {
-      setBills(mockBills)
-      setLoading(false)
-    }, 800)
+    setBills(mockBills)
+    setLoading(false)
   }, [])
 
   const getStatusColor = (status) => {

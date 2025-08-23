@@ -70,11 +70,9 @@ const Transactions = () => {
       }
     ]
 
-    setTimeout(() => {
-      setTransactions(mockTransactions)
-      setFilteredTransactions(mockTransactions)
-      setLoading(false)
-    }, 500)
+    setTransactions(mockTransactions)
+    setFilteredTransactions(mockTransactions)
+    setLoading(false)
   }, [])
 
   useEffect(() => {

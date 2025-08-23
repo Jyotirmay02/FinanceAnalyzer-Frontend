@@ -155,10 +155,8 @@ const Accounts = () => {
       }
     ]
 
-    setTimeout(() => {
-      setAccounts(mockAccounts)
-      setLoading(false)
-    }, 800)
+    setAccounts(mockAccounts)
+    setLoading(false)
   }, [])
 
   const categories = [

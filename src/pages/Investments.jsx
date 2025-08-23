@@ -193,10 +193,8 @@ const Investments = () => {
       }
     ]
 
-    setTimeout(() => {
-      setInvestments(mockInvestments)
-      setLoading(false)
-    }, 1000)
+    setInvestments(mockInvestments)
+    setLoading(false)
   }, [])
 
   const categories = [

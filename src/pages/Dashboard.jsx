@@ -35,7 +35,6 @@ const Dashboard = () => {
     
     setTimeout(() => {
       setPortfolioData(mockData)
-      setLoading(false)
     }, 1000)
   }, [])
 

@@ -76,10 +76,8 @@ const Reports = () => {
       ]
     }
 
-    setTimeout(() => {
-      setReportData(mockReportData)
-      setLoading(false)
-    }, 1000)
+    setReportData(mockReportData)
+    setLoading(false)
   }, [selectedPeriod])
 
   const reportTypes = [

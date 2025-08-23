@@ -124,10 +124,8 @@ const Budgets = () => {
       }
     ]
 
-    setTimeout(() => {
-      setBudgets(mockBudgets)
-      setLoading(false)
-    }, 800)
+    setBudgets(mockBudgets)
+    setLoading(false)
   }, [selectedMonth])
 
   const getStatusColor = (status) => {

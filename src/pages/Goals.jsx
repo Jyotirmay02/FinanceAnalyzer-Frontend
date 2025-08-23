@@ -149,10 +149,8 @@ const Goals = () => {
       }
     ]
 
-    setTimeout(() => {
-      setGoals(mockGoals)
-      setLoading(false)
-    }, 800)
+    setGoals(mockGoals)
+    setLoading(false)
   }, [])
 
   const getStatusColor = (status) => {

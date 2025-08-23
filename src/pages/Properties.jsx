@@ -143,10 +143,8 @@ const Properties = () => {
       }
     ]
 
-    setTimeout(() => {
-      setProperties(mockProperties)
-      setLoading(false)
-    }, 1000)
+    setProperties(mockProperties)
+    setLoading(false)
   }, [])
 
   const totalCurrentValue = properties.reduce((sum, prop) => sum + prop.currentValue, 0)
