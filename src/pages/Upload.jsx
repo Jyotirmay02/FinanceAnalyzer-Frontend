@@ -20,6 +20,11 @@ const Upload = () => {
     try {
       const result = await uploadFiles(files)
       setUploadResult({ success: true, data: result })
+      
+      // Store analysis_id for other pages to use
+      if (result.analysis_id) {
+        localStorage.setItem('current_analysis_id', result.analysis_id)
+      }
     } catch (error) {
       setUploadResult({ 
         success: false, 

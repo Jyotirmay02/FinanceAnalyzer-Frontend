@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE_URL = 'http://localhost:8000/api'
+const API_BASE_URL = 'http://localhost:8001/api/v2'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -15,7 +15,7 @@ export const uploadFiles = async (files) => {
     formData.append('files', file)
   })
   
-  const response = await api.post('/upload', formData, {
+  const response = await api.post('/analyze', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -23,22 +23,26 @@ export const uploadFiles = async (files) => {
   return response.data
 }
 
-export const getPortfolioAnalysis = async (analysisId) => {
-  const response = await api.get(`/analysis/portfolio/${analysisId}`)
+export const getDashboard = async (analysisId) => {
+  const response = await api.get(`/dashboard/${analysisId}`)
   return response.data
 }
 
-export const getCategoryAnalysis = async (analysisId) => {
-  const response = await api.get(`/analysis/categories/${analysisId}`)
+export const getCategories = async (analysisId) => {
+  const response = await api.get(`/categories/${analysisId}`)
+  return response.data
+}
+
+export const getTransactions = async (analysisId, params = {}) => {
+  const response = await api.get(`/transactions/${analysisId}`, { params })
   return response.data
 }
 
 export const getUPIAnalysis = async (analysisId) => {
-  const response = await api.get(`/analysis/upi/${analysisId}`)
+  const response = await api.get(`/upi-analysis/${analysisId}`)
   return response.data
 }
 
-export const getTransactions = async (analysisId) => {
-  const response = await api.get(`/transactions/${analysisId}`)
-  return response.data
-}
+// Legacy compatibility
+export const getPortfolioAnalysis = getDashboard
+export const getCategoryAnalysis = getCategories
